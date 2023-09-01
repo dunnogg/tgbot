@@ -41,9 +41,8 @@ let multiply: number = 0.5;
 bot.command("timer",(ctx) => { multiply = Number(ctx.match)});
 
 bot.api.setMyCommands([
-    { command: "setchatid", description: "Выбор отслеживаемой группы" },
     { command: "statistic", description: "Выдает количество подписчиков на данный момент" },
-    { command: "timer", description: "Выбор периода отправки сообщений в часах"}
+    { command: "start", description: "Запуск бота и выбор периода отправки сообщений в часах"}
 ]);
 
 
