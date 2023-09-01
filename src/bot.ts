@@ -4,7 +4,7 @@ import { isEmpty } from "lodash";
 import fs from 'node:fs';
 
 // Create a bot using the Telegram token
-const bot = new Bot('6551770817:AAFCRLmH8laPgyhN7jFqGSPRDNWllx2Qig8');
+const bot = new Bot('TOKEN');
 const replyWithIntro = (ctx: any) =>
     ctx.reply(introductionMessage, {
         parse_mode: "HTML",
