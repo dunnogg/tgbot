@@ -7,7 +7,7 @@ const bot = new Bot(process.env.TELEGRAM_TOKEN || "");
 const introductionMessage = `
 <b>Команды</b>
 /statistic - Выдает количество подписчиков на данный момент
-/timer [Часы] - Выбор периода отправки сообщений в часах
+/start [Часы] - Выбор периода отправки сообщений в часах
 `;
 
 let chatid : any;
