@@ -1,22 +1,29 @@
 import { Bot } from "grammy";
-import { type Chat, Message } from "grammy/out/types";
+import { type Chat } from "grammy/out/types";
 import { isEmpty } from "lodash";
 import fs from 'node:fs';
-import {TIMEOUT} from "dns";
 
 // Create a bot using the Telegram token
-const bot = new Bot(process.env.TELEGRAM_TOKEN || "");
+const bot = new Bot('6551770817:AAFCRLmH8laPgyhN7jFqGSPRDNWllx2Qig8');
+const replyWithIntro = (ctx: any) =>
+    ctx.reply(introductionMessage, {
+        parse_mode: "HTML",
+    });
 const introductionMessage = `
 <b>Команды</b>
 /statistic - Выдает количество подписчиков на данный момент
 /start [Часы] - Выбор периода отправки сообщений в часах
 `;
-
+bot.api.setMyCommands([
+    { command: "statistic", description: "Выдает количество подписчиков на данный момент" },
+    { command: "start", description: "Выбор периода отправки сообщений в часах"}
+]);
 let chatid : any;
 let chat: number;
 let privatechannel: boolean;
 let hour: number = 3600 * 1000;
 let hours: number = 0.5;
+
 bot.on(["channel_post", ":forward_date"], (ctx) => {
     
     chat = ctx.chat.id;
@@ -31,84 +38,62 @@ bot.on(["channel_post", ":forward_date"], (ctx) => {
 });
 
 bot.command("statistic",(ctx) => {
-                                                        chat = ctx.chat.id;
-                                                        if (isNaN(chat) || privatechannel)
-                                                        {
-                                                            ctx.api.sendMessage(chat, `chatid неверный или отсутствует`)
-                                                        }
-                                                        else{
-                                                            ctx.api.getChatMemberCount(chatid).then((response) => ctx.reply(`${response}`))}});
+    chat = ctx.chat.id;
+    if (isNaN(chat) || privatechannel)
+    {
+        ctx.api.sendMessage(chat, `chatid неверный или отсутствует`)
+    }
+    else{
+        ctx.api.getChatMemberCount(chatid).then((response) => ctx.reply(`${response}`))}});
 
 
 
 bot.command("start",(ctx) => { hours = Number(ctx.match); console.log(hour * hours)
-                                                    if (hour * hours < 5000)
-                                                    {
-                                                        ctx.reply(`Слишком маленький перерыв между сообщениями`);
-                                                    }
-                                                    else if (((hours* hour) >= Number.MAX_VALUE))
-                                                    {
-                                                        ctx.reply(`Слишком большой перерыв между сообщениями`);
-                                                    }
-                                                    else
-                                                    {
-                                                      let timer = setInterval(() => {
-                                                          if (isNaN(chat) || privatechannel) {
-                                                              
-                                                          } else {
-                                                              const Count = bot.api.getChatMemberCount(chatid).then((response) => {
-                                                                  fs.appendFileSync("base.txt", (String(response)+' '));
-                                                                  const file = (fs.readFileSync("base.txt").toString('utf-8')).split(' ');
-                                                                  const a = Number(file[file.length - 2]);
-                                                                  const b = Number(file[file.length - 3]);
-                                                                  
-                                                                  if (a > b)
-                                                                  {
-                                                                      const dif = ((a-b)/a) * 100
-                                                                      bot.api.sendMessage(chat, `
-                                                                      Число подписчиков: ${response} 
-                                                                      Отрицательный прирост: ${dif}%`);
-                                                                  }
-                                                                  if (a < b)
-                                                                  {
-                                                                     const dif = ((b-a)/a) * 100
-                                                                      bot.api.sendMessage(chat, `
-                                                                      Число подписчиков: ${response} 
-                                                                      прирост: ${dif}%`);
-                                                                  }
-                                                                  if (a == b || isNaN(b))
-                                                                  {
-                                                                      const dif = 0
-                                                                      bot.api.sendMessage(chat, `
-                                                                      Число подписчиков: ${response}`);
-                                                                  }
-                                                                  
-
-                                                              });
-                                                          }
-                                                          }, hour * hours);
-                                                        timer.refresh();}});
-bot.api.setMyCommands([
-    { command: "statistic", description: "Выдает количество подписчиков на данный момент" },
-    { command: "start", description: "Выбор периода отправки сообщений в часах"}
-]);
+    if (hour * hours < 5000)
+    {
+        ctx.reply(`Слишком маленький перерыв между сообщениями`);
+    }
+    else if (((hours* hour) >= Number.MAX_VALUE))
+    {
+        ctx.reply(`Слишком большой перерыв между сообщениями`);
+    }
+    else
+    {
+        let timer = setInterval(() => {
+            if (isNaN(chat) || privatechannel) {
+                
+            } else {
+                const Count = bot.api.getChatMemberCount(chatid).then((response) => {
+                    fs.appendFileSync("base.txt", (String(response)+' '));
+                    const file = (fs.readFileSync("base.txt").toString('utf-8')).split(' ');
+                    const a = Number(file[file.length - 2]);
+                    const b = Number(file[file.length - 3]);
+                    
+                    if (a > b)
+                    {
+                        const dif = ((a-b)/a) * 100
+                        bot.api.sendMessage(chat, `
+                            Число подписчиков: ${response} 
+                            прирост: ${dif.toFixed(2)}%`);
+                    }
+                    if (a < b)
+                    {
+                        const dif = ((b-a)/a) * 100
+                        bot.api.sendMessage(chat, `
+                            Число подписчиков: ${response} 
+                            отрицательный прирост: ${dif.toFixed(2)}%`);
+                    }
+                    if (a == b || isNaN(b))
+                    {
+                        const dif = 0
+                        bot.api.sendMessage(chat, `
+                            Число подписчиков: ${response}`);
+                    }});
+            }
+            }, hour * hours);
+        timer.refresh();}});
 
 
-
-
-    
-
- 
-
-
-const replyWithIntro = (ctx: any) =>
-    ctx.reply(introductionMessage, {
-        parse_mode: "HTML",
-    });
 bot.on("message", replyWithIntro);
 
 bot.start()
-
-function substr(): any {
-    throw new Error("Function not implemented.");
-}
