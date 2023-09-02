@@ -39,7 +39,7 @@ bot.on(["channel_post", ":forward_date"], (ctx) => {
 
 bot.command("statistic",(ctx) => {
     chat = ctx.chat.id;
-    if (isNaN(chat) || privatechannel)
+    if (isNaN(chatid) || privatechannel)
     {
         ctx.api.sendMessage(chat, `chatid неверный или отсутствует`)
     }
