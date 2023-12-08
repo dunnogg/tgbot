@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import {clearInterval} from "timers";
 
 // Create a bot using the Telegram token
-const bot = new Bot('6429183919:AAE3gBhKoQyD1TeDPoTxY8FgxX7NqVf5THA');
+const bot = new Bot('Token');
 const replyWithIntro = (ctx: any) =>
     ctx.reply(introductionMessage, {
         parse_mode: "HTML",
